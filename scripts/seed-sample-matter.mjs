@@ -4,6 +4,7 @@ import Database from "better-sqlite3";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 const MATTER_ID = 9000001;
 const dir = path.join(process.cwd(), "data");
@@ -73,4 +74,53 @@ for (const [resource, records] of Object.entries(items)) {
     n++;
   }
 }
+// A fictional two-page medical bill, so the document (PDF) path can be tested without Clio.
+async function makeBillPdf() {
+  const pdf = await PDFDocument.create();
+  const font = await pdf.embedFont(StandardFonts.Helvetica);
+  const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const page = (lines) => {
+    const p = pdf.addPage([612, 792]);
+    let y = 740;
+    for (const [text, b] of lines) {
+      p.drawText(text, { x: 56, y, size: b ? 14 : 11, font: b ? bold : font, color: rgb(0, 0, 0) });
+      y -= b ? 26 : 18;
+    }
+  };
+  page([
+    ["BAYVIEW PHYSICAL THERAPY", true], ["1200 Harbor Drive, San Diego, CA 92101", false], ["", false],
+    ["STATEMENT OF CHARGES", true], ["Patient: Maria Rivera     Account: BPT-55120     Date of injury: 02/27/2026", false], ["", false],
+    ["Date       Service                                   Units   Charge", false],
+    ["04/06/26   Physical therapy evaluation                 1     $320.00", false],
+    ["04/08/26   Therapeutic exercise                        4     $480.00", false],
+    ["04/13/26   Therapeutic exercise / manual therapy       4     $520.00", false],
+    ["04/20/26   Therapeutic exercise / manual therapy       4     $520.00", false],
+    ["Charges this page: $1,840.00", true],
+  ]);
+  page([
+    ["BAYVIEW PHYSICAL THERAPY  (page 2)", true], ["", false],
+    ["Visits 05/04/26 through 06/30/26 (20 visits)                 $6,580.00", false], ["", false],
+    ["TOTAL CHARGES THROUGH 06/30/2026: $8,420.00", true],
+    ["Payments received: $0.00", false],
+    ["BALANCE DUE: $8,420.00", true], ["", false],
+    ["Services rendered on a lien basis pending resolution of the patient's claim.", false],
+    ["Provider notes: patient reports persistent right arm tingling; recommends", false],
+    ["continued therapy 2x/week and orthopedic follow-up with Dr. Kapoor.", false],
+  ]);
+  return Buffer.from(await pdf.save());
+}
+
+const DOC_ID = 9801;
+const docDir = path.join(dir, "documents", String(MATTER_ID));
+fs.mkdirSync(docDir, { recursive: true });
+const docPath = path.join(docDir, `${DOC_ID}-Bayview-PT-statement.pdf`);
+fs.writeFileSync(docPath, await makeBillPdf());
+const docRec = { id: DOC_ID, name: "Bayview-PT-statement.pdf", content_type: "application/pdf", updated_at: now, latest_document_version: { id: 1, content_type: "application/pdf" } };
+upsert.run("documents", DOC_ID, MATTER_ID, now, JSON.stringify(docRec), hash(docRec), now, now);
+db.prepare(
+  `INSERT INTO document_files (document_id, matter_id, version_id, path, content_type, downloaded_at) VALUES (?, ?, 1, ?, 'application/pdf', ?)
+   ON CONFLICT(document_id) DO UPDATE SET path = excluded.path`,
+).run(DOC_ID, MATTER_ID, docPath, now);
+n++;
+
 console.log(`Seeded fictional matter ${MATTER_ID} with ${n} records. Open http://127.0.0.1:3000/matter/${MATTER_ID} and click "Extract facts".`);
