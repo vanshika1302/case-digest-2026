@@ -16,6 +16,21 @@ Clio Manage ──(read-only GET)──▶ sync ──▶ SQLite ──▶ AI ex
 - **UI** (`src/app`, `src/components/Dashboard.tsx`): landing page, `/matter/:id` (firm and provider views), `/demo`.
 - **Storage** (`src/lib/db.ts`): one SQLite file at `data/case-digest.db`. Everything outside Clio lives here.
 
+## Dashboard components
+
+`src/components/Dashboard.tsx` loads the digest and owns state (view, filters, share toggles). The pieces live in `src/components/dashboard/`:
+
+| File | Responsibility |
+|---|---|
+| `DashboardHeader.tsx` | Title, firm/provider switch, Sync and Extract buttons |
+| `StatTiles.tsx`, `tiles.ts` | Headline numbers. `buildTiles()` is the logic, the component only renders |
+| `Filters.tsx` | Search, provider picker, "what changed since", provider-view notice |
+| `FactSections.tsx` | Facts grouped by kind and ordered per audience |
+| `FactCard.tsx` | One fact, its Source button and Share toggle |
+| `SourceDrawer.tsx` | The record and document page behind a fact |
+| `DigestFooter.tsx` | Last extracted, model calls, tokens, cost |
+| `format.ts` | Shared labels, section order, and formatters |
+
 ## Principles
 
 1. **Read-only toward Clio.** Nothing the app does can modify a case file.
