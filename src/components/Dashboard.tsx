@@ -147,8 +147,10 @@ export default function Dashboard({ digestUrl, matterId, demo }: Props) {
   const facts = digest.facts;
   const nextDeadline = facts.filter((f) => f.kind === "deadline" && f.date && new Date(f.date) >= new Date()).sort((a, b) => a.date!.localeCompare(b.date!))[0];
   const billed = facts.filter((f) => f.kind === "medical_bill").reduce((s, f) => s + (f.amount ?? 0), 0);
-  const policy = facts.find((f) => f.kind === "coverage" && f.amount);
-  const valueFact = facts.find((f) => f.kind === "case_value" && f.amount);
+  const policy = facts.find((f) => f.kind === "coverage" && f.amount) ?? facts.find((f) => f.kind === "coverage");
+  const valueFact = facts.find((f) => f.kind === "case_value");
+  // Models sometimes put the figure in the title instead of `amount`; show the fact's own wording rather than guess.
+  const factValue = (f?: Fact) => (!f ? "Unknown" : f.kind === "case_value" || f.amount === undefined ? f.title : usd(f.amount));
   const openRequests = facts.filter((f) => f.kind === "request_to_provider" && f.status !== "complete").length;
   const order = view === "firm" ? FIRM_ORDER : PROVIDER_ORDER;
   const providers = digest.contacts;
@@ -157,8 +159,8 @@ export default function Dashboard({ digestUrl, matterId, demo }: Props) {
     ? [
         { label: "Next deadline", value: nextDeadline ? fmtDate(nextDeadline.date) : "None", sub: nextDeadline?.title },
         { label: "Medical specials", value: usd(billed), sub: `${facts.filter((f) => f.kind === "medical_bill").length} bills` },
-        { label: "Policy limit", value: policy ? usd(policy.amount!) : "Unknown", sub: policy?.title },
-        { label: "Working value", value: valueFact ? usd(valueFact.amount!) : "Unknown", sub: valueFact?.title },
+        { label: "Policy limit", value: factValue(policy), sub: policy?.source.resource },
+        { label: "Working value", value: factValue(valueFact), sub: valueFact?.source.resource },
       ]
     : [
         { label: "Case status", value: matter.status ?? "Open", sub: matter.displayNumber },
@@ -198,7 +200,7 @@ export default function Dashboard({ digestUrl, matterId, demo }: Props) {
         {tiles.map((t) => (
           <div key={t.label} className="rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
             <div className="text-xs uppercase tracking-wide text-neutral-500">{t.label}</div>
-            <div className="mt-1 text-xl font-semibold">{t.value}</div>
+            <div className={`mt-1 font-semibold ${t.value.length > 18 ? "text-sm leading-snug" : "text-xl"}`}>{t.value}</div>
             {t.sub && <div className="truncate text-xs text-neutral-500">{t.sub}</div>}
           </div>
         ))}

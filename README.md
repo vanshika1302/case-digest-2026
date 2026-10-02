@@ -35,6 +35,8 @@ cp .env.example .env.local   # fill in Clio + Anthropic keys
 npm run dev
 ```
 
+No Clio account yet? `npm run seed` loads a fictional matter (open `/matter/9000001`, then **Extract facts**).
+
 Open **http://127.0.0.1:3000** (not localhost: Clio only accepts 127.0.0.1 redirect URIs), connect Clio, then on the matter click **Full sync** and **Extract facts**.
 
 ### Register the Clio app
