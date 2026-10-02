@@ -11,25 +11,37 @@ type Props = {
   onOpen: (f: Fact) => void;
 };
 
-/** Facts grouped by kind, in the order that suits the audience, most important first. */
 export default function FactSections({ facts, view, isShared, isNew, onToggleShare, onOpen }: Props) {
   const order = view === "firm" ? FIRM_ORDER : PROVIDER_ORDER;
+
   return (
-    <>
+    <div className="mt-6 space-y-6">
       {order.map((kind) => {
         const items = facts.filter((f) => f.kind === kind).sort((a, b) => b.importance - a.importance);
         if (!items.length) return null;
+
         return (
-          <section key={kind} className="mt-7">
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-neutral-500">{KIND_LABEL[kind]} <span className="font-normal">({items.length})</span></h2>
-            <ul className="space-y-2">
+          <section key={kind} className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-neutral-600">{KIND_LABEL[kind]}</h2>
+              <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.15em] text-neutral-500">{items.length}</span>
+            </div>
+            <ul className="space-y-3">
               {items.map((f) => (
-                <FactCard key={f.id} fact={f} view={view} shared={isShared(f)} isNew={isNew} onToggleShare={() => onToggleShare(f)} onOpen={() => onOpen(f)} />
+                <FactCard
+                  key={f.id}
+                  fact={f}
+                  view={view}
+                  shared={isShared(f)}
+                  isNew={isNew}
+                  onToggleShare={() => onToggleShare(f)}
+                  onOpen={() => onOpen(f)}
+                />
               ))}
             </ul>
           </section>
         );
       })}
-    </>
+    </div>
   );
 }
