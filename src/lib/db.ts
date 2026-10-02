@@ -110,3 +110,17 @@ function open(): Database.Database {
 
 export const db = globalForDb.__caseDigestDb ?? open();
 globalForDb.__caseDigestDb = db;
+
+// Migrate cached connections too, so development hot reloads see the sharing table.
+db.exec(`
+  CREATE TABLE IF NOT EXISTS fact_visibility (
+    fact_id TEXT NOT NULL,
+    provider_contact_id INTEGER CHECK (provider_contact_id > 0),
+    shared INTEGER NOT NULL CHECK (shared IN (0, 1)),
+    updated_at TEXT NOT NULL
+  );
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_visibility_global
+    ON fact_visibility (fact_id) WHERE provider_contact_id IS NULL;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_visibility_provider
+    ON fact_visibility (fact_id, provider_contact_id) WHERE provider_contact_id IS NOT NULL;
+`);
