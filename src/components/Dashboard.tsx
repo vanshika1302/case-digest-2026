@@ -142,19 +142,19 @@ export default function Dashboard({ digestUrl, matterId, demo }: Props) {
           onProvider={setProvider}
         />
 
-        <div className="mt-6 grid gap-6 xl:grid-cols-[1.05fr_2.25fr_1.15fr]">
-          <aside className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+        <div className="mt-5 grid gap-4 xl:grid-cols-[1fr_2.4fr_1.05fr]">
+          <aside className="rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm">
             <div className="flex items-center gap-3">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-neutral-900 text-lg font-semibold text-white">
                 {getInitials(digest.matter.client?.name)}
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">Client snapshot</p>
+                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500">Client snapshot</p>
                 <h2 className="mt-1 text-lg font-semibold">{digest.matter.client?.name ?? "Client"}</h2>
               </div>
             </div>
 
-            <dl className="mt-4 space-y-3 text-sm">
+            <dl className="mt-4 space-y-2.5 text-sm">
               <div className="flex items-center justify-between border-b border-neutral-100 pb-2">
                 <dt className="text-neutral-500">Matter</dt>
                 <dd className="font-medium">{digest.matter.displayNumber ?? "—"}</dd>
@@ -186,11 +186,11 @@ export default function Dashboard({ digestUrl, matterId, demo }: Props) {
             </dl>
           </aside>
 
-          <section className="space-y-5">
-            <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <section className="space-y-3">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm xl:min-h-60">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">90-second digest</p>
+                  <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500">90-second digest</p>
                   <h2 className="mt-1 text-xl font-semibold">What matters right now</h2>
                 </div>
                 <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
@@ -198,9 +198,9 @@ export default function Dashboard({ digestUrl, matterId, demo }: Props) {
                 </span>
               </div>
 
-              <p className="mt-4 text-[15px] leading-7 text-neutral-700">{digestStory}</p>
+              <p className="mt-3 text-[15px] leading-6 text-neutral-700">{digestStory}</p>
 
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
                 <div className="rounded-xl bg-neutral-50 p-3">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-500">Primary injury</p>
                   <p className="mt-2 text-sm font-medium text-neutral-900">{summary?.primaryInjury?.title ?? "No injury fact yet"}</p>
@@ -212,14 +212,14 @@ export default function Dashboard({ digestUrl, matterId, demo }: Props) {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm">
               <div className="flex items-center justify-between gap-3">
-                <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-neutral-600">Recent changes</h3>
-                <span className="text-xs text-neutral-500">{since ? "Filtered" : "Last 30 days"}</span>
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600">Recent changes</h3>
+                <span className="text-[10px] text-neutral-500">{since ? "Filtered" : "Last 30 days"}</span>
               </div>
-              <div className="mt-3 space-y-2">
+              <div className="mt-2 space-y-2">
                 {recentChanges.length ? recentChanges.map((fact) => (
-                  <div key={fact.id} className="flex items-start gap-3 rounded-xl border border-neutral-100 bg-neutral-50 p-3">
+                  <div key={fact.id} className="flex items-start gap-3 rounded-xl border border-neutral-100 bg-neutral-50 p-2.5">
                     <span className="mt-0.5 inline-flex h-2.5 w-2.5 flex-none rounded-full bg-emerald-500" />
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
@@ -242,14 +242,14 @@ export default function Dashboard({ digestUrl, matterId, demo }: Props) {
               onOpen={setOpen}
             />
             {visible.length === 0 && (
-              <p className="mt-8 text-sm text-neutral-500">No facts match. {digest.facts.length === 0 && !demo && "Run Sync, then Extract facts."}</p>
+              <p className="mt-6 text-sm text-neutral-500">No facts match. {digest.facts.length === 0 && !demo && "Run Sync, then Extract facts."}</p>
             )}
           </section>
 
-          <aside className="space-y-4">
-            <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-neutral-600">Action / attention</h3>
-              <div className="mt-3 space-y-3 text-sm">
+          <aside className="space-y-3">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm">
+              <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600">Action / attention</h3>
+              <div className="mt-3 space-y-2.5 text-sm">
                 <div className="rounded-xl bg-amber-50 p-3">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-700">Next deadline</p>
                   <p className="mt-2 font-medium text-neutral-900">{nextDeadline}</p>
