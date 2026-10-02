@@ -11,7 +11,7 @@ Open **http://127.0.0.1:3000** (not `localhost`; Clio only accepts 127.0.0.1 red
 ## No Clio data?
 
 - `/demo` is a fictional case, no keys needed.
-- `npm run seed` loads a fictional matter into your local database (start the app once first so the tables exist). Open `/matter/9000001` and click **Extract facts**. This needs a model key.
+- `npm run seed` loads a fictional matter into your local database (start the app once first so the tables exist). It includes a fictional two-page PDF bill, so the document path is covered too. Open `/matter/9000001` and click **Extract facts**. This needs a model key.
 
 ## Env vars
 

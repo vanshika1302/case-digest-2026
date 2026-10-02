@@ -23,7 +23,7 @@ Clio Manage ──(read-only GET)──▶ sync ──▶ SQLite ──▶ AI ex
 | File | Responsibility |
 |---|---|
 | `DashboardHeader.tsx` | Title, firm/provider switch, Sync and Extract buttons |
-| `StatTiles.tsx`, `tiles.ts` | Headline numbers. `buildTiles()` is the logic, the component only renders |
+| `StatTiles.tsx`, `tiles.ts` | Headline numbers. `buildTiles()` is the logic (it counts a bill once even if it appears in several records), the component only renders |
 | `Filters.tsx` | Search, provider picker, "what changed since", provider-view notice |
 | `FactSections.tsx` | Facts grouped by kind and ordered per audience |
 | `FactCard.tsx` | One fact, its Source button and Share toggle |
