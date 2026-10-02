@@ -34,6 +34,12 @@ type RawFact = {
   page?: number | null;
 };
 type FactInput = Omit<Fact, "id" | "matterId" | "firstSeenAt" | "source">;
+// The few Clio task/expense fields the deterministic mapping reads.
+type TaskOrExpense = {
+  name?: string; description?: string | null; status?: string; completed_at?: string | null; due_at?: string | null;
+  assignee?: { name?: string } | null;
+  note?: string | null; expense_category?: { name?: string } | null; date?: string | null; total?: number | string | null; price?: number | string | null;
+};
 type Context = { matterId: number; header: string; contactIds: Set<number> };
 
 export type ExtractSummary = {
@@ -279,7 +285,7 @@ export async function extractMatter(matterId: number, { force = false } = {}): P
 
   // 1. Deterministic: tasks and expenses.
   for (const item of pendingItems(matterId, ["tasks", "expenses"])) {
-    const d = item.data as Record<string, any>;
+    const d = item.data as TaskOrExpense;
     if (item.resource === "tasks") {
       const done = Boolean(d.completed_at) || String(d.status ?? "").toLowerCase() === "complete";
       const overdue = !done && d.due_at && new Date(d.due_at) < new Date();
