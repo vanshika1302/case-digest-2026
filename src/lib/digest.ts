@@ -8,6 +8,9 @@ type FactRow = {
   source_quote: string; source_page: number | null; first_seen_at: string;
 };
 
+// Never shared with providers by default, whatever the model decided. The attorney can still opt a fact in.
+const PRIVATE_KINDS: FactKind[] = ["case_value", "coverage", "expense"];
+
 export function rowToFact(r: FactRow): Fact {
   return {
     id: r.id,
@@ -19,7 +22,7 @@ export function rowToFact(r: FactRow): Fact {
     amount: r.amount ?? undefined,
     importance: r.importance as Fact["importance"],
     providerContactId: r.provider_contact_id ?? undefined,
-    shareableByDefault: Boolean(r.shareable_by_default),
+    shareableByDefault: Boolean(r.shareable_by_default) && !PRIVATE_KINDS.includes(r.kind as FactKind),
     status: r.status ?? undefined,
     assignee: r.assignee ?? undefined,
     source: { resource: r.source_resource, clioId: r.source_clio_id, quote: r.source_quote, page: r.source_page ?? undefined },
