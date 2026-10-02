@@ -63,6 +63,18 @@ At developers.clio.com, create an app with Website URL `http://127.0.0.1:3000`, 
 | `GET /api/source/:resource/:id` | The original record behind a fact |
 | `GET /api/documents/:id/file` | A synced document (append `#page=N` for PDFs) |
 
+## Status and known limits
+
+Working end to end on a live Clio matter and on the seeded sample: sync, extraction (including scanned and multi-page PDFs), cited facts, firm and provider views, source drawer, change tracking, cost logging.
+
+Honest limits:
+- The provider view is a filter in the same app, with no login. Share toggles are not saved. Real provider access needs authentication and server-side enforcement ([docs/privacy.md](docs/privacy.md)).
+- Coverage, case value, expenses and deadlines are forced private by default in code, whatever the model says.
+- The dashboard server binds to `127.0.0.1` only because the API has no login. Do not expose it.
+- Data is per machine (local SQLite). `src/lib/demo.ts` and `npm run seed` contain fictional data only.
+- Medical-bill totals count a provider and amount once; two different bills of the same amount from one provider would merge in the tile.
+- No automated tests yet.
+
 ## More docs
 
 See [docs/](docs/README.md) (architecture, data model, extraction, privacy, ADRs), [GLOSSARY.md](GLOSSARY.md) and [CONTRIBUTING.md](CONTRIBUTING.md).

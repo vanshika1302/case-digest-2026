@@ -43,3 +43,6 @@ next-env.d.ts
 
 # local case data, documents and OAuth tokens (never commit)
 /data
+
+# local Claude Code launch config
+/.claude/
