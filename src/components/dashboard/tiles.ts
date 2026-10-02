@@ -22,7 +22,16 @@ export function buildTiles(digest: MatterDigest, view: View, isShared: (f: Fact)
   const nextDeadline = facts
     .filter((f) => f.kind === "deadline" && f.date && new Date(f.date) >= new Date())
     .sort((a, b) => a.date!.localeCompare(b.date!))[0];
-  const bills = facts.filter((f) => f.kind === "medical_bill");
+  // The same bill often appears in several records (statement PDF, billing email, ...). Count each provider+amount once.
+  const seen = new Set<string>();
+  const bills = facts.filter((f) => {
+    if (f.kind !== "medical_bill") return false;
+    if (f.amount === undefined) return true;
+    const key = `${f.providerContactId ?? ""}|${f.amount}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
   const policy = facts.find((f) => f.kind === "coverage" && f.amount) ?? facts.find((f) => f.kind === "coverage");
   const valueFact = facts.find((f) => f.kind === "case_value");
 

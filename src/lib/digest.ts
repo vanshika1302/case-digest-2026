@@ -9,7 +9,7 @@ type FactRow = {
 };
 
 // Never shared with providers by default, whatever the model decided. The attorney can still opt a fact in.
-const PRIVATE_KINDS: FactKind[] = ["case_value", "coverage", "expense"];
+const PRIVATE_KINDS: FactKind[] = ["case_value", "coverage", "expense", "deadline"];
 
 export function rowToFact(r: FactRow): Fact {
   return {

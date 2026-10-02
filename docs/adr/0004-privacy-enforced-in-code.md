@@ -2,7 +2,7 @@
 
 **Status:** accepted
 
-The model proposes whether a fact is shareable, but `PRIVATE_KINDS` (case value, coverage, expenses) are always private by default.
+The model proposes whether a fact is shareable, but `PRIVATE_KINDS` (case value, coverage, expenses, deadlines) are always private by default.
 
 **Why:** In testing, the model marked a policy limit as shareable even though the attorney note said to keep valuation internal. A privacy rule cannot depend on model judgment.
 
