@@ -14,3 +14,7 @@ Treating providers should see where the case stands without the attorney handing
 - The provider view is a filter in the same app, not a separate login. Real provider access would need authentication and server-side enforcement, since the digest API returns all facts.
 - Client data lives in `data/` on the machine running the app. Treat that folder as confidential.
 - Document and note text is sent to the configured model provider (Anthropic, or OpenRouter if configured) for extraction.
+
+## Network exposure
+
+The dev and start scripts bind to `127.0.0.1` only (`next dev -H 127.0.0.1`), because the API has no login and returns client data. Do not change this to `0.0.0.0`, and do not expose the port (tunnels, shared wifi, port forwarding) while real case data is synced. Documents are served inline only for PDFs and common images; other types download.

@@ -14,13 +14,19 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!row) return NextResponse.json({ error: "not found" }, { status: 404 });
 
   const resolved = path.resolve(row.path);
-  if (!resolved.startsWith(path.resolve(DATA_DIR)) || !fs.existsSync(resolved)) {
+  if (!resolved.startsWith(path.resolve(DATA_DIR) + path.sep) || !fs.existsSync(resolved)) {
     return NextResponse.json({ error: "file missing" }, { status: 404 });
   }
+  // Only types that cannot run script are shown inline. Anything else (html, svg, ...) downloads, so a synced
+  // file can never execute on this origin.
+  const type = (row.content_type ?? "").split(";")[0].trim().toLowerCase();
+  const inlineSafe = type === "application/pdf" || ["image/jpeg", "image/png", "image/gif", "image/webp"].includes(type);
+  const name = path.basename(resolved).replace(/"/g, "");
   return new NextResponse(fs.readFileSync(resolved), {
     headers: {
-      "Content-Type": row.content_type ?? "application/octet-stream",
-      "Content-Disposition": `inline; filename="${path.basename(resolved).replace(/"/g, "")}"`,
+      "Content-Type": inlineSafe ? type : "application/octet-stream",
+      "Content-Disposition": `${inlineSafe ? "inline" : "attachment"}; filename="${name}"`,
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }

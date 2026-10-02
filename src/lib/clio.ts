@@ -89,6 +89,8 @@ export async function clioGet(
   const url = pathOrUrl.startsWith("http")
     ? new URL(pathOrUrl)
     : new URL(`/api/v4/${pathOrUrl.replace(/^\//, "")}`, config.clioBase);
+  // The bearer token must only ever go to Clio (absolute URLs come from paging links).
+  if (url.origin !== new URL(config.clioBase).origin) throw new Error(`Refusing to send Clio credentials to ${url.origin}`);
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined) url.searchParams.set(key, String(value));
   }
