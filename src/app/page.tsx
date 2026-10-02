@@ -62,6 +62,12 @@ export default function Home() {
       )}
       {error && <p className="mt-4 text-red-600">{error}</p>}
 
+      {connected && !error && matters.length === 0 && (
+        <p className="mt-6 text-gray-500">
+          Connected to Clio, but this account has no matters. Create or share a matter in Clio, or use an account with case data, then refresh.
+        </p>
+      )}
+
       {connected && (
         <ul className="mt-6 space-y-3">
           {matters.map((m) => (
