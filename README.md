@@ -63,6 +63,10 @@ At developers.clio.com, create an app with Website URL `http://127.0.0.1:3000`, 
 | `GET /api/source/:resource/:id` | The original record behind a fact |
 | `GET /api/documents/:id/file` | A synced document (append `#page=N` for PDFs) |
 
+## More docs
+
+See [docs/](docs/README.md) (architecture, data model, extraction, privacy, ADRs), [GLOSSARY.md](GLOSSARY.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Code map
 
 - `src/lib/clio.ts`: OAuth, read-only API client, pagination, rate-limit retries
